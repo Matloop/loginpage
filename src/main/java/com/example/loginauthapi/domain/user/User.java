@@ -1,5 +1,6 @@
 package com.example.loginauthapi.domain.user;
 
+import com.example.loginauthapi.domain.user.enums.UserEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,4 +20,6 @@ public class User {
     private String name;
     private String email;
     private String password;
+    @Enumerated(EnumType.STRING)
+    private UserEnum role;
 }
