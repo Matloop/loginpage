@@ -1,5 +1,6 @@
 package com.example.loginauthapi.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -50,5 +51,6 @@ public class Endereco {
     // --- Relacionamento com Proprietario ---
     @ManyToOne(fetch = FetchType.LAZY) // Carrega o proprietário apenas quando necessário
     @JoinColumn(name = "proprietario_id", nullable = false) // Nome da FK na tabela 'enderecos'
+    @JsonBackReference
     private Proprietario proprietario;
 }

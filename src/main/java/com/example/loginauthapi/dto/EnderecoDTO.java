@@ -1,15 +1,36 @@
 package com.example.loginauthapi.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
-public record EnderecoDTO(
-        @NotBlank String cep,
-        @NotBlank String logradouro,
-        @NotBlank String numero,
-        String complemento,
-        @NotBlank String bairro,
-        @NotBlank String cidade,
-        @NotBlank @Size(min = 2, max = 2) String uf
-        // Não precisa do ID ou do proprietario_id aqui
-) {}
+@Setter
+@Getter
+public class EnderecoDTO {
+
+    // Não inclua o 'id' do Endereco aqui, ele será gerado pelo banco.
+    private String cep;
+    private String logradouro;
+    private String numero;
+    private String complemento;
+    private String bairro;
+    private String cidade;
+    private String uf;
+    private Long proprietarioId; // <-- ID do proprietário a ser enviado pelo frontend
+
+    // Construtores, Getters e Setters
+    // ... (gere-os ou use Lombok @Data)
+
+    public EnderecoDTO() { }
+
+    public EnderecoDTO(String cep, String logradouro, String numero, String complemento, String bairro, String cidade, String uf, Long proprietarioId) {
+        this.cep = cep;
+        this.logradouro = logradouro;
+        this.numero = numero;
+        this.complemento = complemento;
+        this.bairro = bairro;
+        this.cidade = cidade;
+        this.uf = uf;
+        this.proprietarioId = proprietarioId;
+    }
+    // Getters e Setters ...
+}

@@ -1,5 +1,6 @@
 package com.example.loginauthapi.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -47,5 +48,6 @@ public class Proprietario {
             orphanRemoval = true,     // Remove endereços do banco se forem removidos da lista
             fetch = FetchType.LAZY      // Carrega a lista de endereços apenas quando necessário
     )
+    @JsonManagedReference
     private List<Endereco> enderecos = new ArrayList<>(); // Inicialize a lista
 }
