@@ -1,0 +1,5 @@
+# Ignorar arquivo específico
+src/main/resources/application.properties
+
+# Ignorar a pasta compilada
+target/
