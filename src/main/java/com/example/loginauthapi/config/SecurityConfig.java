@@ -67,6 +67,8 @@
                             .requestMatchers("/auth/login").permitAll()
                             .requestMatchers("/auth/register").permitAll()
                             .requestMatchers("/auth/admin").hasRole("ADMIN")
+                            .requestMatchers("/owner/**").permitAll()
+                            .requestMatchers("address/**").permitAll()
                             .anyRequest().authenticated()
                     )
 
