@@ -126,7 +126,7 @@
                 }
             };
         }
-
+        //configurar integração como front-end cors
         @Bean
         CorsConfigurationSource corsConfigurationSource() {
             CorsConfiguration configuration = new CorsConfiguration();
