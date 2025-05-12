@@ -41,37 +41,22 @@ public class EnderecoController {
 
     @PostMapping
     private ResponseEntity<Endereco> addEndereco(@RequestBody EnderecoDTO enderecoDTO) throws Exception {
-        if (enderecoDTO.getProprietarioId() == null) {
-            // Ou outra validação necessária
-            return ResponseEntity.badRequest().build(); // Retorna 400 Bad Request
-        }
-        //Se não tiver o id do proprietario na db
-        Proprietario proprietario = proprietarioRepository.findById(enderecoDTO.getProprietarioId())
-                .orElseThrow(() -> new EntityNotFoundException("Proprietário não encontrado com ID: " + enderecoDTO.getProprietarioId()));
-
-        Endereco endereco1 = new Endereco();
-        endereco1.setProprietario(proprietario);
-        endereco1.setCidade(enderecoDTO.getCidade());
-        endereco1.setBairro(enderecoDTO.getBairro());
-        endereco1.setUf(enderecoDTO.getUf());
-        endereco1.setCep(enderecoDTO.getCep());
-        endereco1.setLogradouro(enderecoDTO.getLogradouro());
-        endereco1.setNumero(enderecoDTO.getNumero());
-        endereco1.setComplemento(enderecoDTO.getComplemento());
-
-        enderecoService.save(endereco1);
-        return new ResponseEntity<>(endereco1,HttpStatus.CREATED);
+        enderecoService.save(enderecoDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping
-    private ResponseEntity<Endereco> updateEndereco(@RequestBody Endereco endereco) {
+    @PutMapping("{id}")
+    public ResponseEntity<EnderecoDTO> updateEndereco(@RequestBody EnderecoDTO enderecoDTO) {
 
-        if (enderecoService.getById(endereco.getId()).isPresent()) {
-            enderecoService.update(endereco);
-            return ResponseEntity.ok(endereco);
+        if (enderecoService.getById(enderecoDTO.id()).isPresent()) {
+            enderecoService.update(enderecoDTO);
+            return ResponseEntity.ok(enderecoDTO);
         }
+
+
         return ResponseEntity.notFound().build();
     }
+
 
     @DeleteMapping
     private ResponseEntity<Endereco> deleteEndereco(@RequestBody Endereco endereco) {
