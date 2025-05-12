@@ -2,6 +2,7 @@ package com.example.loginauthapi.controller;
 
 import com.example.loginauthapi.domain.user.Endereco;
 import com.example.loginauthapi.domain.user.Proprietario;
+import com.example.loginauthapi.dto.ProprietarioDTO;
 import com.example.loginauthapi.repositories.EnderecoRepository;
 import com.example.loginauthapi.repositories.ProprietarioRepository;
 import com.example.loginauthapi.service.EnderecoService;
@@ -23,14 +24,14 @@ public class ProprietarioController {
     private ProprietarioService proprietarioService;
 
     @GetMapping
-    public ResponseEntity<List<Proprietario>> findAll() {
-        List<Proprietario> proprietarios = proprietarioService.findAll();
+    public ResponseEntity<List<ProprietarioDTO>> findAll() {
+        List<ProprietarioDTO> proprietarios = proprietarioService.findAll();
         return new ResponseEntity<>(proprietarios, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Proprietario> findById(@PathVariable Long id) {
-        Optional<Proprietario> proprietario = proprietarioService.findById(id);
+    public ResponseEntity<ProprietarioDTO> findById(@PathVariable Long id) {
+        Optional<ProprietarioDTO> proprietario = proprietarioService.findById(id);
         if (proprietario.isPresent()) {
             return new ResponseEntity<>(proprietario.get(), HttpStatus.OK);
         }
@@ -38,26 +39,21 @@ public class ProprietarioController {
     }
 
     @PostMapping
-    public ResponseEntity<Proprietario> create(@RequestBody Proprietario proprietario) {
-        Proprietario newProprietario = new Proprietario(proprietario.getId(),proprietario.getNome(),
-                proprietario.getEmail(),proprietario.getTelefone(),
-                proprietario.getEnderecos());
-        proprietarioService.save(newProprietario);
-        return new ResponseEntity<>(newProprietario, HttpStatus.CREATED);
+    public ResponseEntity<ProprietarioDTO> create(@RequestBody ProprietarioDTO proprietario) {
+        proprietarioService.save(proprietario);
+        return new ResponseEntity<>(proprietario, HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public ResponseEntity<Proprietario> update(@RequestBody Proprietario proprietario) {
-        proprietarioService.update(proprietario);
-        if (proprietarioService.findById(proprietario.getId()).isPresent()) {
-            return new ResponseEntity<>(proprietario, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-    @DeleteMapping
-    public ResponseEntity<Proprietario> delete(@RequestBody Proprietario proprietario) {
-        proprietarioService.delete(proprietario);
+    @PutMapping("{id}")
+    public ResponseEntity<ProprietarioDTO> update(@PathVariable Long id ,@RequestBody ProprietarioDTO proprietario) {
+        proprietarioService.update(id,proprietario);
+
         return new ResponseEntity<>(proprietario, HttpStatus.OK);
+    }
+    @DeleteMapping("{id}")
+    public ResponseEntity<Proprietario> delete(@PathVariable Long id) {
+        proprietarioService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

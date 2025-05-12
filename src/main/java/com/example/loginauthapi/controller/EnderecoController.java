@@ -20,18 +20,16 @@ import java.util.Optional;
 public class EnderecoController {
     @Autowired
     private EnderecoService enderecoService;
-    @Autowired
-    private ProprietarioRepository proprietarioRepository;
 
     @GetMapping()
-    private ResponseEntity<List<Endereco>> enderecos() {
-        List<Endereco> enderecos = enderecoService.getAll();
+    private ResponseEntity<List<EnderecoDTO>> enderecos() {
+        List<EnderecoDTO> enderecos = enderecoService.getAll();
         return ResponseEntity.ok(enderecos);
     }
 
     @GetMapping("{id}")
-    private ResponseEntity<Endereco> endereco(@PathVariable Long id) {
-        Optional<Endereco> endereco = enderecoService.getById(id);
+    private ResponseEntity<EnderecoDTO> endereco(@PathVariable Long id) {
+        Optional<EnderecoDTO> endereco = enderecoService.getById(id);
 
         if (endereco.isPresent()) {
             return ResponseEntity.ok(endereco.get());
@@ -40,30 +38,24 @@ public class EnderecoController {
     }
 
     @PostMapping
-    private ResponseEntity<Endereco> addEndereco(@RequestBody EnderecoDTO enderecoDTO) throws Exception {
+    private ResponseEntity<EnderecoDTO> addEndereco(@RequestBody EnderecoDTO enderecoDTO) {
         enderecoService.save(enderecoDTO);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(enderecoDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<EnderecoDTO> updateEndereco(@RequestBody EnderecoDTO enderecoDTO) {
+    public ResponseEntity<EnderecoDTO> updateEndereco(@RequestBody EnderecoDTO enderecoDTO, @PathVariable Long id) {
+        enderecoService.update(id, enderecoDTO);
 
-        if (enderecoService.getById(enderecoDTO.id()).isPresent()) {
-            enderecoService.update(enderecoDTO);
-            return ResponseEntity.ok(enderecoDTO);
-        }
+        return ResponseEntity.ok(enderecoDTO);
 
-
-        return ResponseEntity.notFound().build();
     }
 
 
-    @DeleteMapping
-    private ResponseEntity<Endereco> deleteEndereco(@RequestBody Endereco endereco) {
-        if (enderecoService.getById(endereco.getId()).isPresent()) {
-            enderecoService.delete(endereco.getId());
-            return ResponseEntity.ok(endereco);
-        }
-        return ResponseEntity.ok(endereco);
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteEndereco(@PathVariable Long id) {
+        enderecoService.delete(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

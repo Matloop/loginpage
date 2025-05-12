@@ -50,4 +50,5 @@ public class Proprietario {
     )
     @JsonManagedReference
     private List<Endereco> enderecos = new ArrayList<>(); // Inicialize a lista
+
 }

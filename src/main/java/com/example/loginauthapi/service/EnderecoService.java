@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public interface EnderecoService {
     void save(EnderecoDTO endereco);
-    void update(EnderecoDTO endereco);
+    EnderecoDTO update(Long id,EnderecoDTO endereco);
     void delete(Long id);
-    Optional<Endereco> getById(Long id);
-    List<Endereco> getAll();
+    Optional<EnderecoDTO> getById(Long id);
+    List<EnderecoDTO> getAll();
 }

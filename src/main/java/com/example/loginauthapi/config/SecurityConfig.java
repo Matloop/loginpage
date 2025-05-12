@@ -53,13 +53,14 @@
             http
                     //configuração do cors
                     .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                    .csrf(csrf -> csrf.disable())
+                    .csrf(csrf -> csrf.disable()) // DESABILITA CSRF (APENAS PARA TESTE)
                     .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .headers(headers -> headers
                             // Permite que o H2 console seja exibido em um frame
                             .frameOptions(frameOptions -> frameOptions.sameOrigin())
                     )
                     .authorizeHttpRequests(authorize -> authorize
+                            .requestMatchers("address/**").authenticated()
                             .requestMatchers(toH2Console()).permitAll()
                             //permitir endpoints do OAuth2
                             .requestMatchers("/","/webjars/**", "/error").permitAll()
@@ -68,11 +69,30 @@
                             .requestMatchers("/auth/register").permitAll()
                             .requestMatchers("/auth/admin").hasRole("ADMIN")
                             .requestMatchers("/owner/**").permitAll()
-                            .requestMatchers("address/**").permitAll()
+
                             .anyRequest().authenticated()
                     )
 
                     //habilitar e configurar login OAuth2
+                    .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                    .exceptionHandling(exceptions -> exceptions
+                                    .authenticationEntryPoint((request, response, authException) -> {
+                                        // É SEGURO logar authException.getMessage() aqui, mas não envie para o cliente sem sanitizar
+                                        System.err.println("AuthenticationEntryPoint acionado: " + authException.getMessage()); // Adicione log
+                                        response.setContentType("application/json;charset=UTF-8"); // Defina o tipo de conteúdo
+                                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // Status 401
+                                        // Corpo da resposta opcional (exemplo)
+                                        response.getWriter().write(
+                                                String.format("{\"timestamp\": \"%s\", \"status\": %d, \"error\": \"%s\", \"message\": \"%s\", \"path\": \"%s\"}",
+                                                        java.time.LocalDateTime.now(),
+                                                        HttpServletResponse.SC_UNAUTHORIZED,
+                                                        "Unauthorized",
+                                                        authException.getMessage(), // Cuidado ao expor mensagens de exceção diretamente
+                                                        request.getRequestURI())
+                                        );
+                                    })
+                            // .accessDeniedHandler(...) // Considere adicionar um também para 403
+                    )
                     .oauth2Login(oauth2 -> oauth2.successHandler(oauth2AuthenticationSuccessHandler(passwordEncoder())))
                     .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
             return http.build();
