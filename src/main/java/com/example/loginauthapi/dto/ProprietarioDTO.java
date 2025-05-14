@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public record ProprietarioDTO(
+        Long id,
         @NotBlank String nome,
         @NotBlank String email,
         @NotBlank String telefone,
@@ -42,6 +43,7 @@ public record ProprietarioDTO(
                         enderecoDTOs = Collections.emptyList();
                 }
                 return new ProprietarioDTO(
+                        proprietario.getId(),
                         proprietario.getNome(),
                         proprietario.getEmail(),
                         proprietario.getTelefone(),
